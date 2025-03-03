@@ -1,5 +1,6 @@
 <?php
 include('conexao.php');
+$titulo = "Procurar Paciente";
 
 $cpf_filtro = isset($_POST['cpf_filtro']) ? $_POST['cpf_filtro'] : '';
 
@@ -14,20 +15,10 @@ if ($cpf_filtro) {
     $stmt = $conexao->query($sql);
     $consultas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+ob_start();
 ?>
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pesquisar Consultas</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-
-</head>
-<body>
 
     <div class="container my-5">
         <h2 class="text-center mb-4">Pesquisar Consultas</h2>
@@ -40,7 +31,7 @@ if ($cpf_filtro) {
             <button type="submit" class="btn btn-primary">Pesquisar</button>
         </form>
 
-        <table class="table table-bordered table-striped table-hover">
+        <table class="table table-dark table-striped">
             <thead class="table-dark">
                 <tr>
                     <th>ID</th>
@@ -70,6 +61,7 @@ if ($cpf_filtro) {
             </tbody>
         </table>
     </div>
+	
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 	<script>
@@ -79,6 +71,7 @@ if ($cpf_filtro) {
 		});
 	</script>
 
-
-</body>
-</html>
+<?php
+	$conteudo = ob_get_clean();
+	include 'base.php';
+?>
