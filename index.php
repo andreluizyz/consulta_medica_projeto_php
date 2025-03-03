@@ -1,4 +1,5 @@
 <?php
+
 $titulo = "Página Inicial";
 include 'conexao.php';
 

@@ -1,4 +1,11 @@
 <?php
+
+if (isset($_SESSION['user_id'])) {
+   
+    header("Location: index.php");
+    exit;
+}
+
 $titulo = "Login e Cadastro";
 include 'conexao.php';
 
@@ -24,27 +31,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     } elseif (isset($_POST["acao"]) && $_POST["acao"] == "logar") {
 		
+		session_start();
+		
         // Login
 
         $email = $_POST['email'];
-        $senha = $_POST['senha'];
+		$senha = $_POST['senha'];
 
-        $sql = "SELECT * FROM usuarios WHERE email = :email";
-        $stmt = $conexao->prepare($sql);
-        $stmt->bindParam(':email', $email);
-        $stmt->execute();
+		// Usando prepared statement para evitar SQL Injection
+		$sql = "SELECT * FROM usuarios WHERE email = :email";
+		$stmt = $conexao->prepare($sql);
+		$stmt->bindParam(':email', $email);
+		$stmt->execute();
 
-        if ($stmt->rowCount() > 0) {
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            if (password_verify($senha, $row['senha'])) {
-                echo "Login realizado com sucesso!";
-            } else {
-                echo "Senha incorreta.";
-            }
-        } else {
-            echo "Usuário não encontrado.";
-        }
-    }
+		if ($stmt->rowCount() > 0) {
+			$row = $stmt->fetch(PDO::FETCH_ASSOC);
+			if (password_verify($senha, $row['senha'])) {
+				// Login bem-sucedido, armazenando dados do usuário na sessão
+				session_start();
+				$_SESSION['user_id'] = $row['id']; // Armazena o ID do usuário
+				$_SESSION['user_email'] = $row['email']; // Armazena o email do usuário
+				echo "Login realizado com sucesso!";
+				header("Location: index.php"); // Redireciona para a página inicial
+				exit;
+			} else {
+				echo "Senha incorreta.";
+			}
+		} else {
+			echo "Usuário não encontrado.";
+		}
+	}
 }
 
 ob_start();

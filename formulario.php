@@ -1,5 +1,7 @@
 <?php
+
 $titulo = "Cadastrar Paciente";
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     include 'conexao.php';
@@ -11,11 +13,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     $sql = "INSERT INTO pacientes (nome, cpf, endereco, cep, horario) VALUES ('$nome', '$cpf', '$endereco', '$cep', '$horario')";
     
-    if ($conn->query($sql) === TRUE) {
+    if ($conexao->query($sql) === TRUE) {
         header("Location: listar_consultas.php");
         exit();
     } else {
-        $erro = "Erro ao cadastrar: " . $conn->error;
+        $erro = "Erro ao cadastrar: " . $conexao->error;
     }
 }
 

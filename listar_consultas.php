@@ -1,4 +1,5 @@
 <?php
+
 $titulo = "Listar Consultas";
 include 'conexao.php';
 

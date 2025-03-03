@@ -1,6 +1,8 @@
 <?php
-// Este arquivo é incluído em todas as páginas, então ele define o layout padrão.
+session_start();
+include 'conexao.php';
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -51,6 +53,20 @@
             font-size: 1rem;
             color: white;
         }
+		
+		.btn-custom {
+            background-color: #ff6600;
+            color: white;
+            padding: 12px 24px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-custom:hover {
+            background-color: #ff4500;
+        }
     </style>
 </head>
 <body>
@@ -61,7 +77,20 @@
         <a href="index.php" class="btn btn-primary">Início</a>
         <a href="formulario.php" class="btn btn-primary">Cadastrar Paciente</a>
         <a href="listar_consultas.php" class="btn btn-primary">Listar Consultas</a>
-        <a href="login.php" class="btn btn-primary">Login</a>
+		<?php
+		if (isset($_SESSION['user_id'])) {
+   
+		echo '<a href="logout.php" class="btn btn-custom">Sair</a>';
+		
+		echo '<script>
+        document.getElementById("loginButton").style.display = "none";
+		</script>';
+		} else {
+			
+			echo '<a href="login.php" class="btn btn-primary" id="loginButton">Login</a>';
+		}
+		
+		?>
     </nav>
     
     <!-- Conteúdo da página -->

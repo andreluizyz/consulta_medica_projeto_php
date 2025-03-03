@@ -1,4 +1,5 @@
 <?php
+
 include('conexao.php');
 $titulo = "Procurar Paciente";
 
