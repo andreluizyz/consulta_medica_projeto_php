@@ -1,13 +1,24 @@
 <?php
-include('conexao.php');
+
+$host = 'localhost';
+$dbname = 'consultas_medicas'; 
+$username = 'root'; 
+$password = '';
+
+try {
+    
+    $conexao = new PDO("mysql:host=$host", $username, $password);
+    $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
 
     $sql = "CREATE DATABASE IF NOT EXISTS consultas_medicas";
     $conexao->exec($sql);
     echo "Banco de dados 'consultas_medicas' criado com sucesso!<br>";
 
-    
+ 
     $conexao->exec("USE consultas_medicas");
 
+    
     $sql = "
         CREATE TABLE IF NOT EXISTS pacientes (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -22,4 +33,7 @@ include('conexao.php');
     $conexao->exec($sql);
     echo "Tabela 'pacientes' criada com sucesso!<br>";
 
+} catch (PDOException $e) {
+    die("Erro: " . $e->getMessage());
+}
 ?>
