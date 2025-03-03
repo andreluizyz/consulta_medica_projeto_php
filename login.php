@@ -6,30 +6,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["acao"]) && $_POST["acao"] == "cadastrar") {
 		
         // Cadastro
-		
+
         $nome = $_POST['nome'];
         $email = $_POST['email'];
         $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
 
-        $sql = "INSERT INTO usuarios (nome, email, senha) VALUES ('$nome', '$email', '$senha')";
+        $sql = "INSERT INTO usuarios (nome, email, senha) VALUES (:nome, :email, :senha)";
+        $stmt = $conexao->prepare($sql);
+        $stmt->bindParam(':nome', $nome);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':senha', $senha);
 
-        if ($conexao->query($sql) === TRUE) {
+        if ($stmt->execute()) {
             echo "Cadastro realizado com sucesso!";
         } else {
-            echo "Erro ao cadastrar: " . $conexao->error;
+            echo "Erro ao cadastrar: " . $conexao->errorInfo()[2];
         }
     } elseif (isset($_POST["acao"]) && $_POST["acao"] == "logar") {
 		
         // Login
-		
+
         $email = $_POST['email'];
         $senha = $_POST['senha'];
 
-        $sql = "SELECT * FROM usuarios WHERE email='$email'";
-        $result = $conexao->query($sql);
+        $sql = "SELECT * FROM usuarios WHERE email = :email";
+        $stmt = $conexao->prepare($sql);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
 
-        if ($result->num_rows > 0) {
-            $row = $result->fetch_assoc();
+        if ($stmt->rowCount() > 0) {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
             if (password_verify($senha, $row['senha'])) {
                 echo "Login realizado com sucesso!";
             } else {
@@ -40,6 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
+
 ob_start();
 ?>
 
