@@ -3,10 +3,17 @@ include('conexao.php');
 
 $cpf_filtro = isset($_POST['cpf_filtro']) ? $_POST['cpf_filtro'] : '';
 
-$sql = "SELECT * FROM pacientes WHERE cpf LIKE ?";
-$stmt = $conexao->prepare($sql);
-$stmt->execute(["%$cpf_filtro%"]);
-$consultas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+if ($cpf_filtro) {
+    $sql = "SELECT * FROM pacientes WHERE cpf LIKE ?"; 
+    $stmt = $conexao->prepare($sql);
+    $stmt->execute([$cpf_filtro]);
+    $consultas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} else {
+   
+    $sql = "SELECT * FROM pacientes";
+    $stmt = $conexao->query($sql);
+    $consultas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
 
 <!DOCTYPE html>
@@ -16,14 +23,16 @@ $consultas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pesquisar Consultas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
 </head>
 <body>
 
     <div class="container my-5">
         <h2 class="text-center mb-4">Pesquisar Consultas</h2>
 
-     
-        <form method="POST" action="filtro.php" class="mb-4">
+        <form method="POST" action="filtrar_cpf.php" class="mb-4">
             <div class="mb-3">
                 <label for="cpf_filtro" class="form-label">Pesquisar por CPF:</label>
                 <input type="text" name="cpf_filtro" id="cpf_filtro" class="form-control" value="<?php echo $cpf_filtro; ?>">
@@ -31,7 +40,6 @@ $consultas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <button type="submit" class="btn btn-primary">Pesquisar</button>
         </form>
 
- 
         <table class="table table-bordered table-striped table-hover">
             <thead class="table-dark">
                 <tr>
@@ -64,6 +72,13 @@ $consultas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+		$(document).ready(function(){
+       
+        $('#cpf_filtro').mask('000.000.000-00');
+		});
+	</script>
+
 
 </body>
 </html>
